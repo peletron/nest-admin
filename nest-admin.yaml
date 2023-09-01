@@ -1,0 +1,77 @@
+namespace: nest-admin
+nest-admin:
+  defines: runnable
+  metadata:
+    name: nest-admin
+    description: >-
+      A full-stack admin panel application built with Nest.js (backend) and Vue
+      3 + Vite (frontend).
+    icon: https://emojiapi.dev/api/v1/books.svg
+  containers:
+    nest-admin:
+      build: .
+  services:
+    back-end-port:
+      container: nest-admin
+      port: <- $app-port
+      host-port: <- $app-port
+      publish: false
+      protocol: TCP
+      description: The port the back-end server is exposed at.
+  connections:
+    database-connection:
+      target: monk-mysql/db
+      service: monk-mysql-db
+    redis-connection:
+      target: redis/redis
+      service: redis-svc
+  variables:
+    node-env:
+      env: NODE_ENV
+      type: string
+      description: >-
+        Defines the environment in which the app is running (development, test,
+        production, docker).
+      value: development
+    app-port:
+      env: APP_PORT
+      type: int
+      description: Defines the port on which the back-end server runs.
+      value: '8081'
+    app-prefix:
+      env: APP_PREFIX
+      type: string
+      description: Defines the global prefix for all routes.
+      value: /api
+    jwt-secret-key:
+      env: JWT_SECRET_KEY
+      type: string
+      description: Used to sign JSON web tokens.
+      value: '!!!SETME-USE-SECRETS!!!'
+    jwt-expires-in:
+      env: JWT_EXPIRES_IN
+      type: string
+      description: >-
+        Expiration time for JSON web tokens. Typically expressed in seconds or a
+        string describing a time span.
+      value: 1h
+    db-mysql-host:
+      env: DB_MYSQL_HOST
+      type: string
+      description: MySQL Database hostname.
+      value: <- connection-hostname("database-connection")
+    db-mysql-port:
+      env: DB_MYSQL_PORT
+      type: int
+      description: MySQL Database port.
+      value: <- connection-port("database-connection")
+    redis-host:
+      env: REDIS_HOST
+      type: string
+      description: Redis host.
+      value: <- connection-hostname("redis-connection")
+    redis-port:
+      env: REDIS_PORT
+      type: int
+      description: Redis port.
+      value: <- connection-port("redis-connection")
