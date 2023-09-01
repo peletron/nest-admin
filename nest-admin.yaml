@@ -1,0 +1,75 @@
+namespace: nest-admin
+nest-admin:
+  defines: runnable
+  metadata:
+    name: nest-admin
+    description: >-
+      Nest-Admin is a web application composed of two services: a client
+      application for UI and a server application for handling business logic.
+    icon: https://emojiapi.dev/api/v1/desktop_computer.svg
+  containers:
+    nest-admin:
+      build: .
+  services:
+    api-port:
+      container: nest-admin
+      port: 8080
+      host-port: 8080
+      publish: false
+      protocol: TCP
+      description: Port on which the server application is running.
+    client-port:
+      container: nest-admin
+      port: 9540
+      host-port: 9540
+      publish: false
+      protocol: TCP
+      description: Port on which the client application is running.
+  connections:
+    mysql:
+      target: monk-mysql/db
+      service: monk-mysql-db
+    redis:
+      target: redis/redis
+      service: redis-svc
+  variables:
+    vite-app-env:
+      env: VITE_APP_ENV
+      type: string
+      description: Defines the environment where the app is running.
+      value: dev
+    vite-app-base-api-url:
+      env: VITE_APP_BASE_API_URL
+      type: string
+      description: Base URL for the app's API.
+      value: /api
+    vite-app-download-url:
+      env: VITE_APP_DOWNLOAD_URL
+      type: string
+      description: URL for downloading files from the app.
+      value: http://localhost:8081/static/
+    vite-app-api-request-timeout:
+      env: VITE_APP_API_REQUEST_TIMEOUT
+      type: string
+      description: Timeout for API requests.
+      value: '10000'
+    mysql-root-password:
+      env: MYSQL_ROOT_PASSWORD
+      type: string
+      description: Root password for the MySQL database.
+      value: '!!!SETME-USE-SECRETS!!!'
+    mysql-database:
+      env: MYSQL_DATABASE
+      type: string
+      description: Name of the MySQL database.
+      value: kapok
+    node-env:
+      env: NODE_ENV
+      type: string
+      description: Node.js environment where the server application is running.
+      value: development
+    tz:
+      env: TZ
+      type: string
+      description: Timezone of the app.
+      value: Asia/Shanghai
